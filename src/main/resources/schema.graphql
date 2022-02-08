@@ -1,0 +1,65 @@
+scalar LocalDateTime
+scalar Upload
+
+type Query {
+    getAllUser: [User]
+    getAllPost(tags: [ID]!, page: Int!, size: Int!): [PostType]
+    getPost(postId: ID): PostType
+    getCategoryInfo(ids: [ID]): [CategoryInfoType]
+}
+
+type Mutation {
+    createPost(input: CreatePostInput): PostType
+    upload(file: Upload): File
+    createCategory(input: CreateCategoryInput): CategoryType
+}
+
+type User {
+    userId: ID
+    email: String
+}
+
+type PostType {
+    postId: ID
+    title: String
+    content: String
+    createdDate: LocalDateTime
+    updatedDate: LocalDateTime
+    author: User
+    tags: [String]
+    thumbnail: File
+}
+
+type File {
+    fileId: ID
+    originalName: String
+    realName: String
+}
+
+type CategoryType {
+    categoryId: ID
+    name: String
+    tags: [String]
+}
+
+type CategoryInfoType {
+    category: PostCountType
+    tags: [PostCountType]
+}
+
+type PostCountType {
+    name: String
+    count: Int
+}
+
+input CreatePostInput {
+    title: String!
+    content: String
+    tags: [String]!
+    thumbnailId: ID
+}
+
+input CreateCategoryInput {
+    name: String
+    tags: [ID]
+}

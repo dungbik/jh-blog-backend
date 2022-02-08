@@ -1,0 +1,13 @@
+
+
+graphql:
+  playground:
+    enabled: true
+    cdn:
+      enabled: false
+  tools:
+    schema-location-pattern: '**/*.graphql'
+
+logging:
+  level:
+    org.hibernate.SQL: debug

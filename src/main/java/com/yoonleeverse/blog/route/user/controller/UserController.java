@@ -11,6 +11,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.Optional;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
@@ -38,7 +41,7 @@ public class UserController {
 
     @PreAuthorize("isAnonymous()")
     @PostMapping("/refresh")
-    public LoginResponseDTO refresh(@RequestBody RefreshRequestDTO request) {
+    public LoginResponseDTO refresh(@RequestBody @Valid RefreshRequestDTO request) {
         return userService.refresh(request.getRefreshToken());
     }
 

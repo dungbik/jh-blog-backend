@@ -117,7 +117,7 @@ public class UserService {
 
                     return new LoginResponseDTO(authToken, refreshToken, new LoginUserDTO(user.getEmail()));
                 })
-                .orElse(null);
+                .orElse(new LoginResponseDTO(null, null, null));
     }
 
 }

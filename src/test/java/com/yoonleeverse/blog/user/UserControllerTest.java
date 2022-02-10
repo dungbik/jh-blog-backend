@@ -1,5 +1,6 @@
 package com.yoonleeverse.blog.user;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yoonleeverse.blog.route.user.domain.Authority;
 import com.yoonleeverse.blog.route.user.domain.User;
 import com.yoonleeverse.blog.route.user.dto.LoginRequestDTO;
@@ -14,8 +15,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.*;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -28,6 +31,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class UserControllerTest {
+
 
     @LocalServerPort
     int port;
@@ -52,6 +56,11 @@ class UserControllerTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    private RestTemplate client;
+
     static String testEmail = "test@test.com";
     static String testPassword = "test";
 
@@ -65,10 +74,13 @@ class UserControllerTest {
                 .password(passwordEncoder.encode(testPassword))
                 .build());
         userService.addAuthority(user.getUserId(), Authority.ROLE_ADMIN);
+
+        client = new RestTemplateBuilder()
+                .messageConverters(new MappingJackson2HttpMessageConverter(objectMapper))
+                .build();
     }
 
     ResponseEntity<LoginResponseDTO> tryLogin(String email, String password) {
-        RestTemplate client = new RestTemplate();
         HttpEntity<LoginRequestDTO> body = new HttpEntity<>(
                 new LoginRequestDTO(email, password)
         );
@@ -99,7 +111,6 @@ class UserControllerTest {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + authToken);
 
-        RestTemplate client = new RestTemplate();
         HttpEntity request = new HttpEntity<>(headers);
         return client.exchange(uri("/user/me"), HttpMethod.GET, request, LoginUserDTO.class);
     }
@@ -134,7 +145,6 @@ class UserControllerTest {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + loginResult.getAuthToken());
 
-        RestTemplate client = new RestTemplate();
         HttpEntity request = new HttpEntity<>(headers);
         ResponseEntity<Boolean> res = client.exchange(uri("/user/logout"), HttpMethod.GET, request, Boolean.class);
 
@@ -146,11 +156,10 @@ class UserControllerTest {
     @DisplayName("토큰 갱신")
     void refresh() throws InterruptedException {
         LoginResponseDTO loginResult = tryLogin(testEmail, testPassword).getBody();
-        assertThat(loginResult.getAuthToken()).isNotNull();
+        assertThat(loginResult.getRefreshToken()).isNotNull();
 
         sleep(1000);
 
-        RestTemplate client = new RestTemplate();
         HttpEntity<RefreshRequestDTO> request = new HttpEntity<>(
                 new RefreshRequestDTO(loginResult.getRefreshToken())
         );

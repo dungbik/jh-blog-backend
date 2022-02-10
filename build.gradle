@@ -29,6 +29,7 @@ dependencies {
     implementation 'com.zhokhov.graphql:graphql-datetime-spring-boot-starter:4.1.0'
 
     compileOnly 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
 
     runtimeOnly 'mysql:mysql-connector-java'
     testRuntimeOnly 'com.h2database:h2'

@@ -17,8 +17,4 @@ public class SecurityProperties {
 
     private long refreshTokenExpire;
 
-    private String authTokenCookie;
-
-    private String refreshTokenCookie;
-
 }

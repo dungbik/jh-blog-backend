@@ -1,8 +1,8 @@
 package com.yoonleeverse.blog.user.service;
 
 import com.yoonleeverse.blog.security.JWTProvider;
-import com.yoonleeverse.blog.security.SecurityProperties;
 import com.yoonleeverse.blog.user.domain.RefreshToken;
+import com.yoonleeverse.blog.user.dto.LoginResponseDTO;
 import com.yoonleeverse.blog.user.dto.LoginUserDTO;
 import com.yoonleeverse.blog.user.repository.RefreshTokenRepository;
 import com.yoonleeverse.blog.user.repository.UserRepository;
@@ -12,13 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.List;
@@ -34,7 +29,6 @@ public class UserService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final AuthenticationManager authenticationProvider;
     private final JWTProvider jwtProvider;
-    private final SecurityProperties securityProperties;
 
     public User getCurrentUser() {
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -83,7 +77,7 @@ public class UserService {
         });
     }
 
-    public LoginUserDTO login(String email, String password, HttpServletResponse response) {
+    public LoginResponseDTO login(String email, String password) {
         UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(email, password);
         try {
             SecurityContextHolder.getContext().setAuthentication(authenticationProvider.authenticate(credentials));
@@ -94,40 +88,36 @@ public class UserService {
             String refreshToken = jwtProvider.createRefreshToken(user);
 
             refreshTokenRepository.findByUser(user).ifPresent(refreshTokenRepository::delete);
-
             refreshTokenRepository.save(RefreshToken.builder()
                     .refreshToken(refreshToken)
                     .user(user)
                     .build());
 
-            Cookie authCookie = new Cookie(securityProperties.getAuthTokenCookie(), authToken);
-            authCookie.setHttpOnly(true);
-            response.addCookie(authCookie);
-
-            Cookie refreshCookie = new Cookie(securityProperties.getRefreshTokenCookie(), refreshToken);
-            refreshCookie.setHttpOnly(true);
-            response.addCookie(refreshCookie);
-
-            return new LoginUserDTO(user.getEmail());
-
+            return new LoginResponseDTO(authToken, refreshToken, new LoginUserDTO(user.getEmail()));
         } catch (Exception ex) {
             throw new BadCredentialsException(email, ex);
         }
     }
 
-    public boolean logout(User user, HttpServletResponse response) {
-        Cookie authToken = new Cookie(securityProperties.getAuthTokenCookie(), null);
-        authToken.setMaxAge(0);
-        authToken.setHttpOnly(true);
-        response.addCookie(authToken);
-
-        Cookie refreshToken = new Cookie(securityProperties.getRefreshTokenCookie(), null);
-        refreshToken.setMaxAge(0);
-        refreshToken.setHttpOnly(true);
-        response.addCookie(refreshToken);
-
+    public boolean logout(User user) {
         refreshTokenRepository.findByUser(user).ifPresent(refreshTokenRepository::delete);
         return true;
+    }
+
+    public LoginUserDTO me(User user) {
+        return new LoginUserDTO(user.getEmail());
+    }
+
+    public LoginResponseDTO refresh(String oldRefreshToken) {
+        return refreshTokenRepository.findByRefreshToken(oldRefreshToken)
+                .map(RefreshToken::getUser)
+                .map(user -> {
+                    String authToken = jwtProvider.createAuthToken(user);
+                    String refreshToken = jwtProvider.createRefreshToken(user);
+
+                    return new LoginResponseDTO(authToken, refreshToken, new LoginUserDTO(user.getEmail()));
+                })
+                .orElse(null);
     }
 
 }

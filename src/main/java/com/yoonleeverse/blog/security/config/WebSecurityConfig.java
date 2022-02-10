@@ -2,9 +2,7 @@ package com.yoonleeverse.blog.security.config;
 
 import com.yoonleeverse.blog.security.JWTProvider;
 import com.yoonleeverse.blog.security.MyUserDetailsService;
-import com.yoonleeverse.blog.security.SecurityProperties;
 import com.yoonleeverse.blog.security.filter.JWTFilter;
-import com.yoonleeverse.blog.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,7 +31,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final MyUserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final JWTProvider jwtProvider;
-    private final SecurityProperties securityProperties;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -48,7 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        JWTFilter jwtFilter = new JWTFilter(jwtProvider, securityProperties);
+        JWTFilter jwtFilter = new JWTFilter(jwtProvider);
 
         http
                 .authorizeRequests()

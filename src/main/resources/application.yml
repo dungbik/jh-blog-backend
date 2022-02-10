@@ -32,8 +32,6 @@ spring:
 
 security:
   secret-key: secret-key
-  authTokenCookie: X-AUTH
-  refreshTokenCookie: X-REFRESH
   auth-token-expire: 1800000
   refresh-token-expire: 10080000
 

@@ -3,7 +3,7 @@ scalar Upload
 
 type Query {
     getAllUser: [User]
-    getAllPost(tags: [ID]!, page: Int!, size: Int!): [PostType]
+    getAllPost(category: ID, tags: [ID]!, page: Int!, size: Int!): [PostType]
     getPost(postId: ID): PostType
     getCategoryInfo(ids: [ID]): [CategoryInfoType]
 }

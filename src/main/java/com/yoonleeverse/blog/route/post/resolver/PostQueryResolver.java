@@ -16,8 +16,8 @@ public class PostQueryResolver implements GraphQLQueryResolver {
 
     private final PostService postService;
 
-    public List<PostType> getAllPost(List<Long> tags, int page, int size) {
-        return postService.getAllPost(tags, page, size);
+    public List<PostType> getAllPost(Long category, List<Long> tags, int page, int size) {
+        return postService.getAllPost(category, tags, page, size);
     }
 
     public Optional<PostType> getPost(Long postId) {

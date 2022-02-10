@@ -31,19 +31,37 @@ public class PostService {
     private final TagCategoryRepository tagCategoryRepository;
 
     @Transactional
-    public List<PostType> getAllPost(List<Long> tagList, int page, int size) {
+    public List<PostType> getAllPost(Long category, List<Long> tagList, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.unsorted());
 
-        if (tagList.size() == 0)
-            return postRepository.findAll(pageRequest).getContent().stream()
+        if (category == null) {
+            if (tagList.size() == 0)
+                return postRepository.findAll(pageRequest).getContent().stream()
+                        .map(PostType::makePostType)
+                        .collect(Collectors.toList());
+
+            List<Long> postIds = postTagRepository.findAllPostIdByTagId(tagList, pageRequest).getContent();
+            if (postIds.size() == 0)
+                return null;
+
+            List<Post> posts = postRepository.findAllById(postIds);
+            return posts.stream()
                     .map(PostType::makePostType)
                     .collect(Collectors.toList());
+        } else {
+            List<Long> tags = tagCategoryRepository.getAllTagIdByCategoryId(category);
+            if (tags.size() == 0)
+                return null;
 
-        List<Long> postIds = postTagRepository.findAllPostIdByTagId(tagList, pageRequest).getContent();
-        List<Post> posts = postRepository.findAllById(postIds);
-        return posts.stream()
-                .map(PostType::makePostType)
-                .collect(Collectors.toList());
+            List<Long> postIds = postTagRepository.findAllPostIdByTagId(tags, pageRequest).getContent();
+            if (postIds.size() == 0)
+                return null;
+
+            List<Post> posts = postRepository.findAllById(postIds);
+            return posts.stream()
+                    .map(PostType::makePostType)
+                    .collect(Collectors.toList());
+        }
     }
 
     public Optional<PostType> getPost(Long postId) {

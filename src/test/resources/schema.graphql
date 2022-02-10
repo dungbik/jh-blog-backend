@@ -1,9 +1,0 @@
-type Query {
-    getAllUser: [User]
-}
-
-type User {
-    userId: ID
-    email: String
-    password: String
-}

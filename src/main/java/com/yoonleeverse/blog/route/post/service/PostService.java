@@ -83,7 +83,7 @@ public class PostService {
     @Transactional
     public PostType createPost(CreatePostInput input) {
         User user = userService.getCurrentUser();
-        File thumbnail = fileRepository.findById(input.getThumbnailId()).orElse(null);
+        File thumbnail = fileRepository.findById(input.getThumbnail()).orElse(null);
 
         if (thumbnail == null)
             throw new RuntimeException("thumbnail is null");

@@ -1,11 +1,12 @@
 package com.yoonleeverse.blog.user;
 
-import com.yoonleeverse.blog.user.domain.Authority;
-import com.yoonleeverse.blog.user.domain.User;
-import com.yoonleeverse.blog.user.dto.LoginRequestDTO;
-import com.yoonleeverse.blog.user.repository.RefreshTokenRepository;
-import com.yoonleeverse.blog.user.repository.UserRepository;
-import com.yoonleeverse.blog.user.service.UserService;
+import com.yoonleeverse.blog.route.user.domain.Authority;
+import com.yoonleeverse.blog.route.user.domain.User;
+import com.yoonleeverse.blog.route.user.dto.LoginRequestDTO;
+import com.yoonleeverse.blog.route.user.dto.LoginResponseDTO;
+import com.yoonleeverse.blog.route.user.repository.RefreshTokenRepository;
+import com.yoonleeverse.blog.route.user.repository.UserRepository;
+import com.yoonleeverse.blog.route.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

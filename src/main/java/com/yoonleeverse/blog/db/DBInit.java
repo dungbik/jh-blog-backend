@@ -1,8 +1,8 @@
 package com.yoonleeverse.blog.db;
 
-import com.yoonleeverse.blog.user.domain.Authority;
-import com.yoonleeverse.blog.user.domain.User;
-import com.yoonleeverse.blog.user.service.UserService;
+import com.yoonleeverse.blog.route.user.domain.Authority;
+import com.yoonleeverse.blog.route.user.domain.User;
+import com.yoonleeverse.blog.route.user.service.UserService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;

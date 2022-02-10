@@ -1,6 +1,6 @@
 package com.yoonleeverse.blog.security;
 
-import com.yoonleeverse.blog.user.repository.UserRepository;
+import com.yoonleeverse.blog.route.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

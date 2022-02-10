@@ -27,7 +27,7 @@ type PostType {
     updatedDate: LocalDateTime
     author: User
     tags: [String]
-    thumbnail: File
+    thumbnail: String
 }
 
 type File {

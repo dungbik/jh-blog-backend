@@ -1,5 +1,6 @@
 package com.yoonleeverse.blog.file.controller;
 
+import com.yoonleeverse.blog.file.repository.FileRepository;
 import com.yoonleeverse.blog.file.storage.StorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -16,13 +17,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/file")
 public class FileController {
 
+    private final FileRepository fileRepository;
     private final StorageService storageService;
 
     @GetMapping("/serve/{filename:.+}")
     @ResponseBody
     public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
-        Resource file = storageService.loadAsResource(filename);
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=\"" + file.getFilename() + "\"").body(file);
+        return fileRepository.findByRealName(filename)
+                .map(file -> ResponseEntity
+                        .ok()
+                        .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"" + file.getOriginalName() + "\"")
+                        .body(storageService.loadAsResource(file)))
+                .orElse(ResponseEntity.notFound().build());
     }
 }

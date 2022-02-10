@@ -37,7 +37,7 @@ public class PostType {
 
     private List<String> tags;
 
-    private File thumbnail;
+    private String thumbnail;
 
     public static PostType makePostType(Post post) {
         PostType pt = PostType.builder()
@@ -48,6 +48,7 @@ public class PostType {
                 .updatedDate(post.getUpdatedDate())
                 .author(post.getAuthor())
                 .tags(new ArrayList<>())
+                .thumbnail(post.getThumbnail().stream().findFirst().map(File::getRealName).orElse(null))
                 .build();
 
         if (post.getPostTags() != null)

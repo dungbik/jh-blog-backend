@@ -1,5 +1,6 @@
 package com.yoonleeverse.blog.file.storage;
 
+import com.yoonleeverse.blog.file.domain.File;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -11,6 +12,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +39,8 @@ public class LocalStorageService implements StorageService {
             if (part == null)
                 throw new Exception("Part is null");
 
-            String realName = part.getSubmittedFileName();
+            String realName = UUID.randomUUID().toString() + getExtension(part.getSubmittedFileName());
+
             String filePath = storageProperties.getPath() + realName;
             part.write(filePath);
 
@@ -52,17 +56,23 @@ public class LocalStorageService implements StorageService {
     }
 
     @Override
-    public Resource loadAsResource(String filename) {
+    public Resource loadAsResource(File file) {
         try {
-            Path file = load(filename);
-            Resource resource = new UrlResource(file.toUri());
+            Path loadFile = load(file.getRealName());
+            Resource resource = new UrlResource(loadFile.toUri());
             if (resource.exists() || resource.isReadable())
                 return resource;
             else
-                throw new Exception("Could not read file: " + filename);
+                throw new Exception("Could not read file: " + loadFile);
 
         } catch (Exception e) {
-            throw new RuntimeException("Could not read file: " + filename, e);
+            throw new RuntimeException("Could not read file - id : " + file.getFileId(), e);
         }
+    }
+
+    private Optional<String> getExtension(String fileName) {
+        return Optional.ofNullable(fileName)
+                .filter(f -> f.contains("."))
+                .map(f -> f.substring(fileName.lastIndexOf(".")));
     }
 }

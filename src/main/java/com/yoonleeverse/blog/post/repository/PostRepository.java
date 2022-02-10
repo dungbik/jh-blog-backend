@@ -14,7 +14,7 @@ import java.util.Optional;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    @Query("SELECT DISTINCT p FROM Post p JOIN FETCH p.postTags WHERE p.postId = (:id) ORDER BY p.createdDate DESC")
+    @Query("SELECT DISTINCT p FROM Post p JOIN FETCH p.postTags JOIN FETCH p.thumbnail WHERE p.postId = (:id) ORDER BY p.createdDate DESC")
     Optional<Post> findById(@Param("id") Long id);
 
     @Query(value = "SELECT p FROM Post p JOIN FETCH p.postTags ORDER BY p.createdDate DESC",

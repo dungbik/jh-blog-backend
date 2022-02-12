@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -106,7 +107,11 @@ public class PostService {
                 })
                 .collect(Collectors.toSet());
 
+        Set<File> thumnail = Stream.of(thumbnail)
+                .collect(Collectors.toSet());
+
         post.setPostTags(postTags);
+        post.setThumbnail(thumnail);
         return PostType.makePostType(post);
     }
 

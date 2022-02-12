@@ -56,7 +56,7 @@ input CreatePostInput {
     title: String!
     content: String
     tags: [String]!
-    thumbnailId: ID
+    thumbnail: ID
 }
 
 input CreateCategoryInput {

@@ -51,6 +51,7 @@ public class Post {
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
     private Set<PostTag> postTags;
 
+    @Setter
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
     private Set<File> thumbnail;
 

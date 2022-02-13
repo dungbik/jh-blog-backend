@@ -39,9 +39,13 @@ public class LocalStorageService implements StorageService {
             if (part == null)
                 throw new Exception("Part is null");
 
-            String realName = UUID.randomUUID().toString() + getExtension(part.getSubmittedFileName());
+            String ext = getExtension(part.getSubmittedFileName()).orElse(null);
+            if (ext == null)
+                throw new Exception("file has not extension");
 
+            String realName = UUID.randomUUID() + ext;
             String filePath = storageProperties.getPath() + realName;
+
             part.write(filePath);
 
             return realName;
@@ -73,6 +77,6 @@ public class LocalStorageService implements StorageService {
     private Optional<String> getExtension(String fileName) {
         return Optional.ofNullable(fileName)
                 .filter(f -> f.contains("."))
-                .map(f -> f.substring(fileName.lastIndexOf(".")));
+                .map(f -> f.substring(f.lastIndexOf(".")));
     }
 }

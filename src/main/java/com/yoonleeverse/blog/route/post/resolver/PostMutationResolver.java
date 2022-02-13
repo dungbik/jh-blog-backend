@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
+import javax.validation.Valid;
+
 @Component
 @RequiredArgsConstructor
 public class PostMutationResolver implements GraphQLMutationResolver {
@@ -17,7 +19,7 @@ public class PostMutationResolver implements GraphQLMutationResolver {
     private final PostService postService;
 
     @PreAuthorize("isAuthenticated()")
-    public PostType createPost(CreatePostInput input) {
+    public PostType createPost(@Valid CreatePostInput input) {
         return postService.createPost(input);
     }
 

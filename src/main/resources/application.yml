@@ -35,7 +35,7 @@ security:
   refresh-token-expire: 10080000
 
 storage:
-  path: /Users/yjh/Desktop/Project/Storage/
+  path: ./Storage/
 
 server:
   port: 8000

@@ -110,10 +110,19 @@ public class UserService {
 
     public LoginResponseDTO refresh(String oldRefreshToken) {
         return refreshTokenRepository.findByRefreshToken(oldRefreshToken)
+                .map(refreshToken -> {
+                    refreshTokenRepository.delete(refreshToken);
+                    return refreshToken;
+                })
                 .map(RefreshToken::getUser)
                 .map(user -> {
                     String authToken = jwtProvider.createAuthToken(user);
                     String refreshToken = jwtProvider.createRefreshToken(user);
+
+                    refreshTokenRepository.save(RefreshToken.builder()
+                            .refreshToken(refreshToken)
+                            .user(user)
+                            .build());
 
                     return new LoginResponseDTO(authToken, refreshToken, new LoginUserDTO(user.getEmail()));
                 })

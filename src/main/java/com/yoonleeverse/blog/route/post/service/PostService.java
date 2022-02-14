@@ -171,13 +171,12 @@ public class PostService {
         if (ids.size() == 0)
             ids = categoryRepository.getAllId();
 
-        List<String> categoryNames = categoryRepository.getAllNameById(ids);
+        List<Category> categories = categoryRepository.getAllById(ids);
         List<List<Long>> tagList = new ArrayList<>();
 
-        List<List<PostCountType>> infos = ids.stream()
-                .filter(id -> categoryRepository.findById(id).isPresent())
-                .map(id -> {
-                    List<Long> tags = tagCategoryRepository.getAllTagIdByCategoryId(id);
+        List<List<PostCountType>> infos = categories.stream()
+                .map(category -> {
+                    List<Long> tags = tagCategoryRepository.getAllTagIdByCategoryId(category.getCategoryId());
                     tagList.add(tags);
                     return tags;
                 })
@@ -192,10 +191,11 @@ public class PostService {
                 .collect(Collectors.toList());
 
         List<CategoryInfoType> result = new ArrayList<>();
-        for (int i = 0; i < categoryNames.size(); i++) {
+        for (int i = 0; i < categories.size(); i++) {
             int total = postTagRepository.countPostByTagId(tagList.get(i));
+
             result.add(CategoryInfoType.builder()
-                    .category(new PostCountType(categoryNames.get(i), total))
+                    .category(new PostCountType(categories.get(i).getName(), total))
                     .tags(infos.get(i))
                     .build());
         }

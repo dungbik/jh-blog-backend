@@ -35,7 +35,7 @@ security:
   refresh-token-expire: 10080000
 
 storage:
-  path: ./Storage/
+  path: ${STORAGE_PATH}
 
 server:
   port: 8000

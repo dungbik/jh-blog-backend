@@ -36,10 +36,13 @@ public class PostService {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.unsorted());
 
         if (category == null) {
-            if (tagList.size() == 0)
-                return postRepository.findAll(pageRequest).getContent().stream()
+            if (tagList.size() == 0) {
+                List<Long> ids = postRepository.getAllId(pageRequest).getContent();
+
+                return postRepository.getAllByIds(ids).stream()
                         .map(PostType::makePostType)
                         .collect(Collectors.toList());
+            }
 
             List<Long> postIds = postTagRepository.findAllPostIdByTagId(tagList, pageRequest).getContent();
             if (postIds.size() == 0)

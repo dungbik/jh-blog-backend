@@ -38,6 +38,8 @@ public class PostService {
         if (category == null) {
             if (tagList.size() == 0) {
                 List<Long> ids = postRepository.getAllId(pageRequest).getContent();
+                if (ids.size() == 0)
+                    return null;
 
                 return postRepository.getAllByIds(ids).stream()
                         .map(PostType::makePostType)

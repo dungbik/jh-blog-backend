@@ -51,7 +51,7 @@ public class PostType {
                 .author(post.getAuthor())
                 .tags(new ArrayList<>())
                 .files(new ArrayList<>())
-                .thumbnail(post.getThumbnail().stream().findFirst().map(File::getRealName).orElse(null))
+                .thumbnail(post.getThumbnail().stream().findFirst().map(File::getRealName).orElse("default.jpeg"))
                 .build();
 
         if (post.getPostTags() != null)

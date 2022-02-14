@@ -94,8 +94,6 @@ public class PostService {
         User user = userService.getCurrentUser();
         File thumbnail = fileRepository.findById(input.getThumbnail()).orElse(null);
 
-        if (thumbnail == null)
-            throw new RuntimeException("thumbnail is null");
 
         Post post = Post.builder()
                 .author(user)
@@ -103,8 +101,11 @@ public class PostService {
                 .content(input.getContent())
                 .build();
 
-        thumbnail.setPost(post);
-        fileRepository.save(thumbnail);
+        if (thumbnail != null) {
+            thumbnail.setPost(post);
+            fileRepository.save(thumbnail);
+        }
+
         postRepository.save(post);
 
         Set<PostTag> postTags = input.getTags().stream()
@@ -116,8 +117,9 @@ public class PostService {
                 .collect(Collectors.toSet());
 
         post.setPostTags(postTags);
-        post.setThumbnail(Stream.of(thumbnail)
-                .collect(Collectors.toSet()));
+        if (thumbnail != null)
+            post.setThumbnail(Stream.of(thumbnail)
+                    .collect(Collectors.toSet()));
 
         Set<File> files = input.getAttachments().stream()
                 .filter(id -> fileRepository.findById(id).isPresent())

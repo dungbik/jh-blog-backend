@@ -57,7 +57,7 @@ input CreatePostInput {
     title: String!
     content: String
     tags: [String]!
-    thumbnail: ID!
+    thumbnail: ID
     attachments: [ID]!
 }
 

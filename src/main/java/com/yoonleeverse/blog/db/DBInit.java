@@ -1,5 +1,7 @@
 package com.yoonleeverse.blog.db;
 
+import com.yoonleeverse.blog.route.file.domain.File;
+import com.yoonleeverse.blog.route.file.repository.FileRepository;
 import com.yoonleeverse.blog.route.post.domain.Category;
 import com.yoonleeverse.blog.route.post.repository.CategoryRepository;
 import com.yoonleeverse.blog.route.user.domain.Authority;
@@ -16,6 +18,7 @@ public class DBInit implements InitializingBean {
 
     private final UserService userService;
     private final CategoryRepository categoryRepository;
+    private final FileRepository fileRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -34,6 +37,16 @@ public class DBInit implements InitializingBean {
                     .build();
             categoryRepository.save(category);
         }
+
+        if (!fileRepository.findByRealName("default.jpeg").isPresent()) {
+            File file = File.builder()
+                    .originalName("default.jpeg")
+                    .realName("default.jpeg")
+                    .build();
+            fileRepository.save(file);
+        }
+
+
 
     }
 }

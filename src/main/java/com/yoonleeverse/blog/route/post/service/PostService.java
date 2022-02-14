@@ -92,8 +92,9 @@ public class PostService {
     @Transactional
     public PostType createPost(CreatePostInput input) {
         User user = userService.getCurrentUser();
-        File thumbnail = fileRepository.findById(input.getThumbnail()).orElse(null);
-
+        File thumbnail = null;
+        if (input.getThumbnail() != null)
+            thumbnail = fileRepository.findById(input.getThumbnail()).orElse(null);
 
         Post post = Post.builder()
                 .author(user)

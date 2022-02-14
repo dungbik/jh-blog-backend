@@ -23,7 +23,7 @@ public class PostMutationResolver implements GraphQLMutationResolver {
         return postService.createPost(input);
     }
 
-    //@PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")
     public CategoryType createCategory(CreateCategoryInput input) {
         return postService.createCategory(input);
     }

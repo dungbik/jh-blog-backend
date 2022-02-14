@@ -80,6 +80,11 @@ public class PostService {
         if (tag == null) {
             tag = Tag.builder().name(tagName).build();
             tagRepository.save(tag);
+            TagCategory tagCategory = TagCategory.builder()
+                    .category(categoryRepository.findByName("미등록 태그").get())
+                    .tag(tag)
+                    .build();
+            tagCategoryRepository.save(tagCategory);
         }
         return tag;
     }
@@ -110,11 +115,9 @@ public class PostService {
                 })
                 .collect(Collectors.toSet());
 
-        Set<File> thumnail = Stream.of(thumbnail)
-                .collect(Collectors.toSet());
-
         post.setPostTags(postTags);
-        post.setThumbnail(thumnail);
+        post.setThumbnail(Stream.of(thumbnail)
+                .collect(Collectors.toSet()));
         return PostType.makePostType(post);
     }
 
@@ -132,10 +135,14 @@ public class PostService {
         Set<TagCategory> postTags = input.getTags().stream()
                 .filter(tagId -> tagRepository.findById(tagId).isPresent())
                 .map(tagRepository::findById)
+                .map(Optional::get)
                 .map((tag) -> {
+                    tagCategoryRepository.getByNames("미등록 태그", tag.getName())
+                            .ifPresent(tagCategoryRepository::delete);
+
                     TagCategory tagCategory = TagCategory.builder()
                             .category(category)
-                            .tag(tag.get())
+                            .tag(tag)
                             .build();
                     return tagCategoryRepository.save(tagCategory);
                 })
@@ -148,10 +155,15 @@ public class PostService {
     public List<CategoryInfoType> getCategoryInfo(List<Long> ids) {
 
         List<String> categoryNames = categoryRepository.getAllNameById(ids);
+        List<List<Long>> tagList = new ArrayList<>();
 
         List<List<PostCountType>> infos = ids.stream()
                 .filter(id -> categoryRepository.findById(id).isPresent())
-                .map(tagCategoryRepository::getAllTagIdByCategoryId)
+                .map(id -> {
+                    List<Long> tags = tagCategoryRepository.getAllTagIdByCategoryId(id);
+                    tagList.add(tags);
+                    return tags;
+                })
                 .map(postTagRepository::getAllNameAndCountByTagId)
                 .map(interfaces -> interfaces.stream()
                         .map(i -> PostCountType.builder().name(i.getName())
@@ -164,10 +176,7 @@ public class PostService {
 
         List<CategoryInfoType> result = new ArrayList<>();
         for (int i = 0; i < categoryNames.size(); i++) {
-            int total = 0;
-            for (PostCountType pct : infos.get(i)) {
-                total += pct.getCount();
-            }
+            int total = postTagRepository.countPostByTagId(tagList.get(i));
             result.add(CategoryInfoType.builder()
                     .category(new PostCountType(categoryNames.get(i), total))
                     .tags(infos.get(i))

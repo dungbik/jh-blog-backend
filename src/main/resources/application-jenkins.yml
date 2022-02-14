@@ -9,10 +9,10 @@ graphql:
 
 spring:
   datasource:
-    url: jdbc:mysql://180.231.130.252:3306/blog
+    url: ${DB_URL}
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: root
+    username: ${DB_USERNAME}
+    password: ${DB_USERNAME}
 
   jpa:
     generate-ddl: true

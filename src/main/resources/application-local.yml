@@ -1,0 +1,41 @@
+
+graphql:
+  playground:
+    enabled: true
+    cdn:
+      enabled: false
+  tools:
+    schema-location-pattern: '**/*.graphql'
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/blog
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+
+#logging:
+#  level:
+#    org.hibernate.SQL: debug
+
+security:
+  secret-key: secret-key
+  auth-token-expire: 1800000
+  refresh-token-expire: 10080000
+
+storage:
+  path: ./Storage/
+
+server:
+  port: 8000

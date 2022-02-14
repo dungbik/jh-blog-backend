@@ -50,6 +50,7 @@ public class PostType {
                 .updatedDate(post.getUpdatedDate())
                 .author(post.getAuthor())
                 .tags(new ArrayList<>())
+                .files(new ArrayList<>())
                 .thumbnail(post.getThumbnail().stream().findFirst().map(File::getRealName).orElse(null))
                 .build();
 

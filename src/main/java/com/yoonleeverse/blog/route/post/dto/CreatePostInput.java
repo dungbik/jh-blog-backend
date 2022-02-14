@@ -17,7 +17,6 @@ public class CreatePostInput {
     @NotNull
     private List<String> tags;
 
-    @NotNull
     private Long thumbnail;
 
     @NotNull

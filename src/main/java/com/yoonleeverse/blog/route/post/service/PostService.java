@@ -154,6 +154,9 @@ public class PostService {
 
     public List<CategoryInfoType> getCategoryInfo(List<Long> ids) {
 
+        if (ids.size() == 0)
+            ids = categoryRepository.getAllId();
+
         List<String> categoryNames = categoryRepository.getAllNameById(ids);
         List<List<Long>> tagList = new ArrayList<>();
 

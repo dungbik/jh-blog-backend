@@ -39,6 +39,8 @@ public class PostType {
 
     private String thumbnail;
 
+    private List<String> files;
+
     public static PostType makePostType(Post post) {
         PostType pt = PostType.builder()
                 .postId(post.getPostId())
@@ -53,10 +55,18 @@ public class PostType {
 
         if (post.getPostTags() != null)
             pt.addTags(post.getPostTags());
+
+        if (post.getFiles() != null)
+            pt.addFiles(post.getFiles());
+
         return pt;
     }
 
     public void addTags(Set<PostTag> postTags) {
         tags.addAll(postTags.stream().map(PostTag::getTag).map(Tag::getName).collect(Collectors.toList()));
+    }
+
+    public void addFiles(Set<File> files) {
+        this.files.addAll(files.stream().map(File::getRealName).collect(Collectors.toList()));
     }
 }

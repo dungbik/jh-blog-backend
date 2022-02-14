@@ -28,6 +28,7 @@ type PostType {
     author: User
     tags: [String]
     thumbnail: String
+    files: [String]
 }
 
 type File {
@@ -56,7 +57,8 @@ input CreatePostInput {
     title: String!
     content: String
     tags: [String]!
-    thumbnail: ID
+    thumbnail: ID!
+    attachments: [ID]!
 }
 
 input CreateCategoryInput {

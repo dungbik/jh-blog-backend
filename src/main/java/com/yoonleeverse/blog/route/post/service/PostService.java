@@ -118,6 +118,20 @@ public class PostService {
         post.setPostTags(postTags);
         post.setThumbnail(Stream.of(thumbnail)
                 .collect(Collectors.toSet()));
+
+        Set<File> files = input.getAttachments().stream()
+                .filter(id -> fileRepository.findById(id).isPresent())
+                .map(fileRepository::findById)
+                .map(Optional::get)
+                .map(file -> {
+                    file.setPost(post);
+                    fileRepository.save(file);
+
+                    return file;
+                })
+                .collect(Collectors.toSet());
+        post.setFiles(files);
+
         return PostType.makePostType(post);
     }
 

@@ -19,4 +19,7 @@ public class CreatePostInput {
 
     @NotNull
     private Long thumbnail;
+
+    @NotNull
+    private List<Long> attachments;
 }

@@ -51,7 +51,7 @@ public class PostType {
                 .author(post.getAuthor())
                 .tags(new ArrayList<>())
                 .files(new ArrayList<>())
-                .thumbnail(post.getThumbnail().size() == 0
+                .thumbnail(post.getThumbnail() == null || post.getThumbnail().size() == 0
                         ? "default.jpeg"
                         : post.getThumbnail().stream()
                         .findFirst()

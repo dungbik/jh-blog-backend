@@ -172,11 +172,13 @@ public class PostService {
     }
 
     public List<CategoryInfoType> getCategoryInfo(List<Long> ids) {
+        List<Category> categories;
 
         if (ids.size() == 0)
-            ids = categoryRepository.getAllId();
+            categories = categoryRepository.getAll();
+        else
+            categories = categoryRepository.getAllById(ids);
 
-        List<Category> categories = categoryRepository.getAllById(ids);
         List<List<Long>> tagList = new ArrayList<>();
 
         List<List<PostCountType>> infos = categories.stream()
@@ -201,7 +203,7 @@ public class PostService {
             int total = postTagRepository.countPostByTagId(tagList.get(i));
 
             result.add(CategoryInfoType.builder()
-                    .category(new PostCountType(ids.get(i), categories.get(i).getName(), total))
+                    .category(new PostCountType(categories.get(i).getCategoryId(), categories.get(i).getName(), total))
                     .tags(infos.get(i))
                     .build());
         }

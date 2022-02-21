@@ -18,6 +18,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Query("SELECT c FROM Category c WHERE c.categoryId IN (:ids)")
     List<Category> getAllById(@Param("ids") List<Long> ids);
 
-    @Query("SELECT c.categoryId FROM Category c")
-    List<Long> getAllId();
+    @Query("SELECT c FROM Category c")
+    List<Category> getAll();
 }

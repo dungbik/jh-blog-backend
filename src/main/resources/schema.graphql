@@ -49,6 +49,7 @@ type CategoryInfoType {
 }
 
 type PostCountType {
+    id: ID
     name: String
     count: Int
 }

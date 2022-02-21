@@ -188,6 +188,7 @@ public class PostService {
                 .map(postTagRepository::getAllNameAndCountByTagId)
                 .map(interfaces -> interfaces.stream()
                         .map(i -> PostCountType.builder().name(i.getName())
+                                .id(i.getId())
                                 .count(i.getCount())
                                 .build()
                         )
@@ -200,7 +201,7 @@ public class PostService {
             int total = postTagRepository.countPostByTagId(tagList.get(i));
 
             result.add(CategoryInfoType.builder()
-                    .category(new PostCountType(categories.get(i).getName(), total))
+                    .category(new PostCountType(ids.get(i), categories.get(i).getName(), total))
                     .tags(infos.get(i))
                     .build());
         }

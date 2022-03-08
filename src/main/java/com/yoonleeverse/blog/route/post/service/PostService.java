@@ -192,6 +192,7 @@ public class PostService {
                         .map(i -> PostCountType.builder().name(i.getName())
                                 .id(i.getId())
                                 .count(i.getCount())
+                                .dummy(1)
                                 .build()
                         )
                         .collect(Collectors.toList())

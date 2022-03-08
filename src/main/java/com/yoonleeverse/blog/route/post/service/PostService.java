@@ -203,7 +203,7 @@ public class PostService {
             int total = postTagRepository.countPostByTagId(tagList.get(i));
 
             result.add(CategoryInfoType.builder()
-                    .category(new PostCountType(categories.get(i).getCategoryId(), categories.get(i).getName(), total))
+                    .category(new PostCountType(categories.get(i).getCategoryId(), categories.get(i).getName(), total, 0))
                     .tags(infos.get(i))
                     .build());
         }

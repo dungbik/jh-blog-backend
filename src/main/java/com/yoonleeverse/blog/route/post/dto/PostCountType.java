@@ -16,4 +16,6 @@ public class PostCountType {
     private String name;
 
     private Integer count;
+
+    private Integer dummy;
 }

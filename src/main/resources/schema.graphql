@@ -52,6 +52,7 @@ type PostCountType {
     id: ID
     name: String
     count: Int
+    dummy: Int
 }
 
 input CreatePostInput {

@@ -5,15 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CategoryInfoType {
+public class TagCountType {
 
-    CategoryCountType category;
+    private Long id;
 
-    List<TagCountType> tags;
+    private String name;
+
+    private Integer count;
 }

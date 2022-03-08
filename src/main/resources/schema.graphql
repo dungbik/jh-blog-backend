@@ -44,15 +44,20 @@ type CategoryType {
 }
 
 type CategoryInfoType {
-    category: PostCountType
-    tags: [PostCountType]
+    category: CategoryCountType
+    tags: [TagCountType]
 }
 
-type PostCountType {
+type CategoryCountType {
     id: ID
     name: String
     count: Int
-    dummy: Int
+}
+
+type TagCountType {
+    id: ID
+    name: String
+    count: Int
 }
 
 input CreatePostInput {

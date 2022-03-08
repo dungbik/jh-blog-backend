@@ -181,7 +181,7 @@ public class PostService {
 
         List<List<Long>> tagList = new ArrayList<>();
 
-        List<List<PostCountType>> infos = categories.stream()
+        List<List<TagCountType>> infos = categories.stream()
                 .map(category -> {
                     List<Long> tags = tagCategoryRepository.getAllTagIdByCategoryId(category.getCategoryId());
                     tagList.add(tags);
@@ -189,10 +189,9 @@ public class PostService {
                 })
                 .map(postTagRepository::getAllNameAndCountByTagId)
                 .map(interfaces -> interfaces.stream()
-                        .map(i -> PostCountType.builder().name(i.getName())
+                        .map(i -> TagCountType.builder().name(i.getName())
                                 .id(i.getId())
                                 .count(i.getCount())
-                                .dummy(1)
                                 .build()
                         )
                         .collect(Collectors.toList())
@@ -204,7 +203,7 @@ public class PostService {
             int total = postTagRepository.countPostByTagId(tagList.get(i));
 
             result.add(CategoryInfoType.builder()
-                    .category(new PostCountType(categories.get(i).getCategoryId(), categories.get(i).getName(), total, 0))
+                    .category(new CategoryCountType(categories.get(i).getCategoryId(), categories.get(i).getName(), total))
                     .tags(infos.get(i))
                     .build());
         }

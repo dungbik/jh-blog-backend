@@ -9,13 +9,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PostCountType {
+public class CategoryCountType {
 
     private Long id;
 
     private String name;
 
     private Integer count;
-
-    private Integer dummy;
 }

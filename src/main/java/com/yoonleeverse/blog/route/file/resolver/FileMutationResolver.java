@@ -5,6 +5,7 @@ import com.yoonleeverse.blog.route.file.service.FileService;
 import graphql.kickstart.tools.GraphQLMutationResolver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.Part;
@@ -16,9 +17,8 @@ public class FileMutationResolver implements GraphQLMutationResolver {
 
     private final FileService uploadService;
 
-    //    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")
     public File upload(Part part) {
-        log.debug("Upload: " + part.getSubmittedFileName());
         return uploadService.upload(part);
     }
 }

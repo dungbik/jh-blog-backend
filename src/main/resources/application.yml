@@ -39,4 +39,4 @@ storage:
   path: ${STORAGE:./Storage/}
 
 server:
-  port: 8000
+  port: 8888

@@ -125,8 +125,7 @@ public class PostService {
 
         post.setPostTags(postTags);
         if (thumbnail != null)
-            post.setThumbnail(Stream.of(thumbnail)
-                    .collect(Collectors.toSet()));
+            post.setThumbnail(thumbnail);
 
         Set<File> files = input.getAttachments().stream()
                 .filter(id -> fileRepository.findById(id).isPresent())
@@ -224,9 +223,8 @@ public class PostService {
             Post post = postRepository.findById(postId)
                     .orElseThrow(() -> new RuntimeException("존재하지 않는 게시글입니다."));
 
-            if (!CollectionUtils.isEmpty(post.getThumbnail())) {
-                post.getThumbnail().stream()
-                        .forEach(file -> storageService.delete(file.getRealName()));
+            if (post.getThumbnail() == null) {
+                storageService.delete(post.getThumbnail().getRealName());
             }
 
             if (!CollectionUtils.isEmpty(post.getFiles())) {
@@ -244,5 +242,43 @@ public class PostService {
         }
 
         return res;
+    }
+
+    @Transactional
+    public PostType updatePost(UpdatePostInput input) {
+
+        Post post = postRepository.findById(input.getPostId())
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 게시글입니다."));
+
+        post.updatePost(input.getTitle(), input.getContent());
+
+        postTagRepository.deleteByPost(post);
+        Set<PostTag> postTags = input.getTags().stream()
+                .map(this::getTagByName)
+                .map(tag -> {
+                    PostTag postTag = PostTag.builder().post(post).tag(tag).build();
+                    return postTagRepository.save(postTag);
+                })
+                .collect(Collectors.toSet());
+
+        post.setPostTags(postTags);
+
+        if (post.getThumbnail() != null) {
+            File thumbnail = fileRepository.findById(input.getThumbnail())
+                    .orElse(null);
+            boolean isChanged =
+                    thumbnail == null || post.getThumbnail().getFileId() != input.getThumbnail();
+            if (isChanged) {
+                storageService.delete(post.getThumbnail().getRealName());
+
+                if (thumbnail != null) {
+                    thumbnail.setPost(post);
+                    fileRepository.save(thumbnail);
+                    post.setThumbnail(thumbnail);
+                }
+            }
+        }
+
+        return PostType.makePostType(post);
     }
 }

@@ -52,11 +52,16 @@ public class Post {
     private Set<PostTag> postTags;
 
     @Setter
-    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
-    private Set<File> thumbnail;
+    @OneToOne
+    private File thumbnail;
 
     @Setter
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
     private Set<File> files;
+
+    public void updatePost(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 
 }

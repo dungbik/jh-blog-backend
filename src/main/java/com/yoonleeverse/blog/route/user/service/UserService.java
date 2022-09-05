@@ -126,7 +126,7 @@ public class UserService {
 
                     return new LoginResponseDTO(authToken, refreshToken, new LoginUserDTO(user.getEmail()));
                 })
-                .orElse(new LoginResponseDTO(null, null, null));
+                .orElseThrow(() -> new RuntimeException("refresh token failed : " + oldRefreshToken));
     }
 
 }

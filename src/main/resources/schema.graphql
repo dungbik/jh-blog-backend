@@ -13,6 +13,7 @@ type Mutation {
     upload(file: Upload): File
     createCategory(input: CreateCategoryInput): CategoryType
     deletePost(postId: ID): BasicType
+    updatePost(input: UpdatePostInput): PostType
 }
 
 type User {
@@ -67,7 +68,7 @@ type BasicType {
 
 input CreatePostInput {
     title: String!
-    content: String
+    content: String!
     tags: [String]!
     thumbnail: ID
     attachments: [ID]!
@@ -76,4 +77,13 @@ input CreatePostInput {
 input CreateCategoryInput {
     name: String
     tags: [ID]
+}
+
+input UpdatePostInput {
+    postId: ID!
+    title: String!
+    content: String!
+    tags: [String]!
+    thumbnail: ID
+    attachments: [ID]!
 }

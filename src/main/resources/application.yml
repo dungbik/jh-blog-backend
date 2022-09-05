@@ -42,4 +42,4 @@ server:
 
 logging:
   level:
-    root: DEBUG
+    com.yoonleeverse.blog: debug

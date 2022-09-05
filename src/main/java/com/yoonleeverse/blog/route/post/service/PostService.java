@@ -263,21 +263,24 @@ public class PostService {
 
         post.setPostTags(postTags);
 
-        if (post.getThumbnail() != null) {
+        if ((post.getThumbnail() == null && input.getThumbnail() != null)
+                || post.getThumbnail().getFileId() != input.getThumbnail()) {
             File thumbnail = fileRepository.findById(input.getThumbnail())
                     .orElse(null);
-            boolean isChanged =
-                    thumbnail == null || post.getThumbnail().getFileId() != input.getThumbnail();
-            if (isChanged) {
-                storageService.delete(post.getThumbnail().getRealName());
 
-                if (thumbnail != null) {
-                    thumbnail.setPost(post);
-                    fileRepository.save(thumbnail);
-                    post.setThumbnail(thumbnail);
-                }
+            if (post.getThumbnail() == null) {
+                storageService.delete(post.getThumbnail().getRealName());
+                fileRepository.deleteById(post.getThumbnail().getFileId());
+            }
+
+            if (thumbnail != null) {
+                thumbnail.setPost(post);
+                fileRepository.save(thumbnail);
+                post.setThumbnail(thumbnail);
             }
         }
+
+        // todo 첨부 파일 update 도 해야됨
 
         return PostType.makePostType(post);
     }

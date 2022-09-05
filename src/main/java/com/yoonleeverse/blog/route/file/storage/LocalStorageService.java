@@ -74,6 +74,15 @@ public class LocalStorageService implements StorageService {
         }
     }
 
+    @Override
+    public void delete(String filename) {
+        Path path = rootPath.resolve(filename);
+        java.io.File file = path.toFile();
+        if (file.isFile()) {
+            file.delete();
+        }
+    }
+
     private Optional<String> getExtension(String fileName) {
         return Optional.ofNullable(fileName)
                 .filter(f -> f.contains("."))

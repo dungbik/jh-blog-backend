@@ -1,5 +1,7 @@
 package com.yoonleeverse.blog.route.post.resolver;
 
+import com.sun.xml.bind.v2.schemagen.xmlschema.SimpleType;
+import com.yoonleeverse.blog.route.common.dto.BasicType;
 import com.yoonleeverse.blog.route.post.dto.CategoryType;
 import com.yoonleeverse.blog.route.post.dto.CreateCategoryInput;
 import com.yoonleeverse.blog.route.post.dto.CreatePostInput;
@@ -27,5 +29,11 @@ public class PostMutationResolver implements GraphQLMutationResolver {
     public CategoryType createCategory(CreateCategoryInput input) {
         return postService.createCategory(input);
     }
+
+    @PreAuthorize("isAuthenticated")
+    public BasicType deletePost(Long postId) {
+        return postService.deletePost(postId);
+    }
+
 
 }

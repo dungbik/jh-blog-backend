@@ -12,7 +12,9 @@ public interface StorageService {
 
     String store(Part part);
 
-    public Path load(String filename);
+    Path load(String filename);
 
-    public Resource loadAsResource(File file);
+    Resource loadAsResource(File file);
+
+    void delete(String filename);
 }

@@ -1,5 +1,6 @@
 package com.yoonleeverse.blog.route.post.repository;
 
+import com.yoonleeverse.blog.route.post.domain.Post;
 import com.yoonleeverse.blog.route.post.domain.PostTag;
 import com.yoonleeverse.blog.route.post.dto.PostCountInterface;
 import org.springframework.data.domain.Page;
@@ -23,5 +24,6 @@ public interface PostTagRepository extends JpaRepository<PostTag, Long> {
     @Query("SELECT pt.tag.tagId AS id, pt.tag.name AS name, COUNT(pt.post) AS count FROM PostTag pt WHERE pt.tag.tagId IN (:ids) GROUP BY pt.id")
     List<PostCountInterface> getAllNameAndCountByTagId(@Param("ids") List<Long> ids);
 
+    void deleteByPost(Post post);
 
 }

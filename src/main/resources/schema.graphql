@@ -12,6 +12,7 @@ type Mutation {
     createPost(input: CreatePostInput): PostType
     upload(file: Upload): File
     createCategory(input: CreateCategoryInput): CategoryType
+    deletePost(postId: ID): BasicType
 }
 
 type User {
@@ -58,6 +59,10 @@ type TagCountType {
     id: ID
     name: String
     count: Int
+}
+
+type BasicType {
+    success: Boolean
 }
 
 input CreatePostInput {

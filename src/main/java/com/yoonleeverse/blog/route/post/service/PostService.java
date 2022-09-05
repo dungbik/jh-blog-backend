@@ -1,7 +1,9 @@
 package com.yoonleeverse.blog.route.post.service;
 
+import com.yoonleeverse.blog.route.common.dto.BasicType;
 import com.yoonleeverse.blog.route.file.domain.File;
 import com.yoonleeverse.blog.route.file.repository.FileRepository;
+import com.yoonleeverse.blog.route.file.storage.StorageService;
 import com.yoonleeverse.blog.route.post.domain.*;
 import com.yoonleeverse.blog.route.post.dto.*;
 import com.yoonleeverse.blog.route.post.repository.*;
@@ -13,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -30,6 +33,7 @@ public class PostService {
     private final FileRepository fileRepository;
     private final CategoryRepository categoryRepository;
     private final TagCategoryRepository tagCategoryRepository;
+    private final StorageService storageService;
 
     @Transactional
     public List<PostType> getAllPost(Long category, List<Long> tagList, int page, int size) {
@@ -211,4 +215,34 @@ public class PostService {
         return result;
     }
 
+    @Transactional
+    public BasicType deletePost(Long postId) {
+
+        BasicType res = new BasicType();
+
+        try {
+            Post post = postRepository.findById(postId)
+                    .orElseThrow(() -> new RuntimeException("존재하지 않는 게시글입니다."));
+
+            if (!CollectionUtils.isEmpty(post.getThumbnail())) {
+                post.getThumbnail().stream()
+                        .forEach(file -> storageService.delete(file.getRealName()));
+            }
+
+            if (!CollectionUtils.isEmpty(post.getFiles())) {
+                post.getFiles().stream()
+                        .forEach(file -> storageService.delete(file.getRealName()));
+            }
+
+            postTagRepository.deleteByPost(post);
+            fileRepository.deleteByPost(post);
+            postRepository.deleteById(postId);
+
+            res.setSuccess(true);
+        } catch (Exception e) {
+            res.setSuccess(false);
+        }
+
+        return res;
+    }
 }

@@ -9,6 +9,7 @@ import com.yoonleeverse.blog.security.JWTProvider;
 import com.yoonleeverse.blog.route.user.domain.RefreshToken;
 import com.yoonleeverse.blog.route.user.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -109,24 +111,25 @@ public class UserService {
     }
 
     public LoginResponseDTO refresh(String oldRefreshToken) {
-        return refreshTokenRepository.findByRefreshToken(oldRefreshToken)
-                .map(refreshToken -> {
-                    refreshTokenRepository.delete(refreshToken);
-                    return refreshToken;
-                })
-                .map(RefreshToken::getUser)
-                .map(user -> {
-                    String authToken = jwtProvider.createAuthToken(user);
-                    String refreshToken = jwtProvider.createRefreshToken(user);
+        log.debug("old {%s}", oldRefreshToken);
 
-                    refreshTokenRepository.save(RefreshToken.builder()
-                            .refreshToken(refreshToken)
-                            .user(user)
-                            .build());
+        RefreshToken oldToken = refreshTokenRepository.findByRefreshToken(oldRefreshToken)
+                .orElseThrow(() -> new RuntimeException("refresh token not found : " + oldRefreshToken));
 
-                    return new LoginResponseDTO(authToken, refreshToken, new LoginUserDTO(user.getEmail()));
-                })
-                .orElseThrow(() -> new RuntimeException("refresh token failed : " + oldRefreshToken));
+        User user = oldToken.getUser();
+        String authToken = jwtProvider.createAuthToken(user);
+        String refreshToken = jwtProvider.createRefreshToken(user);
+
+        refreshTokenRepository.delete(oldToken);
+
+        refreshTokenRepository.save(RefreshToken.builder()
+                .refreshToken(refreshToken)
+                .user(user)
+                .build());
+
+        log.debug("old {%s}, new {%s}", oldRefreshToken, refreshToken);
+
+        return new LoginResponseDTO(authToken, refreshToken, new LoginUserDTO(user.getEmail()));
     }
 
 }

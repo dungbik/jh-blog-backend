@@ -111,7 +111,7 @@ public class UserService {
     }
 
     public LoginResponseDTO refresh(String oldRefreshToken) {
-        log.debug("old {%s}", oldRefreshToken);
+        log.debug("old {}", oldRefreshToken);
 
         RefreshToken oldToken = refreshTokenRepository.findByRefreshToken(oldRefreshToken)
                 .orElseThrow(() -> new RuntimeException("refresh token not found : " + oldRefreshToken));
@@ -127,7 +127,7 @@ public class UserService {
                 .user(user)
                 .build());
 
-        log.debug("old {%s}, new {%s}", oldRefreshToken, refreshToken);
+        log.debug("old {}, new {}", oldRefreshToken, refreshToken);
 
         return new LoginResponseDTO(authToken, refreshToken, new LoginUserDTO(user.getEmail()));
     }

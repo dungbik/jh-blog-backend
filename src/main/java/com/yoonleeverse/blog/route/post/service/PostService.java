@@ -9,6 +9,7 @@ import com.yoonleeverse.blog.route.post.dto.*;
 import com.yoonleeverse.blog.route.post.repository.*;
 import com.yoonleeverse.blog.route.user.domain.User;
 import com.yoonleeverse.blog.route.user.service.UserService;
+import jdk.jfr.StackTrace;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -239,6 +240,7 @@ public class PostService {
             res.setSuccess(true);
         } catch (Exception e) {
             res.setSuccess(false);
+            log.error(e.getMessage());
         }
 
         return res;
